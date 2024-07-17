@@ -1,0 +1,7 @@
+database:
+  host: "db"
+  port: "5432"
+  user: "user"
+  name: "taskmanager"
+  password: "password"
+  sslmode: "disable"

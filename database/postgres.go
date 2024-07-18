@@ -1,14 +1,14 @@
 package database
 
 import (
-	"TaskManagerGoLang/config"
+	"TaskManagerGoLang/models"
 	"fmt"
 
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
 )
 
-func NewPostgresDb(cfg config.DataBase) (*sqlx.DB, error) {
+func NewPostgresDb(cfg models.DataBase) (*sqlx.DB, error) {
 	connectStr := fmt.Sprintf("host=%s port=%s user=%s dbname=%s password=%s sslmode=%s",
 		cfg.Host, cfg.Port, cfg.User, cfg.Name, cfg.Password, cfg.SSLMode)
 

@@ -1,20 +1,13 @@
 package config
 
 import (
+	"TaskManagerGoLang/models"
+
 	"github.com/spf13/viper"
 )
 
-type DataBase struct {
-	Host     string
-	Port     string
-	User     string
-	Name     string
-	Password string
-	SSLMode  string
-}
-
-func LoadConfig() (DataBase, error) {
-	var dbConfig DataBase
+func LoadConfig() (models.DataBase, error) {
+	var dbConfig models.DataBase
 
 	viper.SetConfigName("config")
 	viper.SetConfigType("yaml")

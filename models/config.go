@@ -8,3 +8,7 @@ type DataBase struct {
 	Password string
 	SSLMode  string
 }
+
+type JWT struct {
+	Secret_key string
+}

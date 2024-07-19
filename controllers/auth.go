@@ -1,7 +1,9 @@
 package controllers
 
 import (
+	"TaskManagerGoLang/config"
 	"TaskManagerGoLang/models"
+	"log"
 	"net/http"
 	"time"
 
@@ -11,7 +13,15 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-var jwtKey = []byte("secret_key")
+var jwtKey []byte
+
+func init() {
+	key, err := config.LoadSecretKeyConfig()
+	if err != nil {
+		log.Fatalf("Failed to load secret key: %v", err)
+	}
+	jwtKey = []byte(key)
+}
 
 type Credentials struct {
 	Username string `json:"username"`

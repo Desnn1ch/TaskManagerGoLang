@@ -14,8 +14,8 @@ const (
 	kConfigPath string = "."
 )
 
-// initViper инициализирует viper один раз для всех функций
-func initViper() {
+// init инициализирует viper один раз для всех функций
+func init() {
 	viper.SetConfigName(kConfigName)
 	viper.SetConfigType(kConfigType)
 	viper.AddConfigPath(kConfigPath)
@@ -23,8 +23,6 @@ func initViper() {
 
 func LoadDataBaseConfig() (models.DataBase, error) {
 	var dbConfig models.DataBase
-
-	initViper()
 
 	if err := viper.ReadInConfig(); err != nil {
 		return dbConfig, fmt.Errorf("failed to read config file: %w", err)
@@ -39,8 +37,6 @@ func LoadDataBaseConfig() (models.DataBase, error) {
 
 func LoadSecretKeyConfig() (string, error) {
 	var jwtConfig models.JWT
-
-	initViper()
 
 	if err := viper.ReadInConfig(); err != nil {
 		return "", fmt.Errorf("failed to read config file: %w", err)

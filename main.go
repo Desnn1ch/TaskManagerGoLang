@@ -24,10 +24,9 @@ func main() {
 	if err != nil {
 		log.Fatalf("Failed to load Redis config: %v", err)
 	}
-	fmt.Printf("asdadadafsafsdjkgdanbjfadnbjenbdanbkdmbarjnbjanbjbhnjkmbhjvghcfgvgbjkn.kjvgchfszDASzdgfjhykujgfjhdgsfukhlij;hukdhrgjkj/;lhfjtdgfgjkjlk")
-	fmt.Printf("Redis config: %v\n", redisCfg)
+  
 	rdb, err := database.NewRedisClient(redisCfg)
-	//rdb := database.NewRedisClient()
+
 	if err != nil {
 		log.Fatalf("failed to connect to redis: %s", err)
 	}

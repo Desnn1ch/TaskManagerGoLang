@@ -12,3 +12,9 @@ type DataBase struct {
 type JWT struct {
 	Secret_key string
 }
+
+type Redis struct {
+	Port string
+	Host string
+	Ttl  int
+}

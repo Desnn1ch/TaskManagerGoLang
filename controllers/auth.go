@@ -3,17 +3,23 @@ package controllers
 import (
 	"TaskManagerGoLang/config"
 	"TaskManagerGoLang/models"
+	"context"
 	"log"
 	"net/http"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
+	"github.com/go-redis/redis/v8"
 	"github.com/jmoiron/sqlx"
 	"golang.org/x/crypto/bcrypt"
 )
 
-var jwtKey []byte
+var (
+	jwtKey []byte
+	ctx    = context.Background()
+	rdb    *redis.Client
+)
 
 func init() {
 	key, err := config.LoadSecretKeyConfig()
@@ -26,6 +32,10 @@ func init() {
 type Credentials struct {
 	Username string `json:"username"`
 	Password string `json:"password"`
+}
+
+func InitializeRedis(redisClient *redis.Client) {
+	rdb = redisClient
 }
 
 func Register(c *gin.Context, db *sqlx.DB) {
@@ -41,7 +51,7 @@ func Register(c *gin.Context, db *sqlx.DB) {
 		return
 	}
 
-	query := `INSERT INTO users (username, password) VALUES ($1, $2)`
+	query := "INSERT INTO users (username, password) VALUES ($1, $2)"
 	_, err = db.Exec(query, creds.Username, string(hashedPassword))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create user"})
@@ -59,7 +69,7 @@ func Login(c *gin.Context, db *sqlx.DB) {
 	}
 
 	var user models.User
-	query := `SELECT id, password FROM users WHERE username = $1`
+	query := "SELECT id, password FROM users WHERE username = $1"
 	err := db.Get(&user, query, creds.Username)
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid credentials"})
@@ -79,6 +89,12 @@ func Login(c *gin.Context, db *sqlx.DB) {
 	tokenString, err := token.SignedString(jwtKey)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to generate token"})
+		return
+	}
+
+	err = rdb.Set(ctx, tokenString, user.ID, 24*time.Hour).Err()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to store session in Redis"})
 		return
 	}
 

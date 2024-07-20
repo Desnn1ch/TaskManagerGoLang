@@ -4,6 +4,8 @@ import (
 	"TaskManagerGoLang/config"
 	"TaskManagerGoLang/database"
 	"TaskManagerGoLang/handlers"
+
+	"fmt"
 	"log"
 )
 
@@ -18,7 +20,17 @@ func main() {
 		log.Fatalf("Failed to connect to database: %v", err)
 	}
 
-	router := handlers.SetupRouter(db)
+	redisCfg, err := config.LoadRedisConfig()
+	if err != nil {
+		log.Fatalf("Failed to load Redis config: %v", err)
+	}
+  
+	rdb, err := database.NewRedisClient(redisCfg)
+
+	if err != nil {
+		log.Fatalf("failed to connect to redis: %s", err)
+	}
+	router := handlers.SetupRouter(db, rdb)
 
 	router.Run(":8080")
 }

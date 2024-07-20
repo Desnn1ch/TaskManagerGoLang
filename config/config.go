@@ -52,3 +52,17 @@ func LoadSecretKeyConfig() (string, error) {
 
 	return jwtConfig.Secret_key, nil
 }
+
+func LoadRedisConfig() (models.Redis, error) {
+	var redisConfig models.Redis
+
+	if err := viper.ReadInConfig(); err != nil {
+		return redisConfig, fmt.Errorf("failed to read config file: %w", err)
+	}
+
+	if err := viper.UnmarshalKey("redis", &redisConfig); err != nil {
+		return redisConfig, fmt.Errorf("failed to unmarshal redis config: %w", err)
+	}
+
+	return redisConfig, nil
+}

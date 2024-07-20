@@ -4,11 +4,14 @@ import (
 	"TaskManagerGoLang/controllers"
 
 	"github.com/gin-gonic/gin"
+	"github.com/go-redis/redis/v8"
 	"github.com/jmoiron/sqlx"
 )
 
-func SetupRouter(db *sqlx.DB) *gin.Engine {
+func SetupRouter(db *sqlx.DB, rdb *redis.Client) *gin.Engine {
 	router := gin.Default()
+
+	controllers.InitializeRedis(rdb)
 
 	router.POST("/register", func(c *gin.Context) { controllers.Register(c, db) })
 	router.POST("/login", func(c *gin.Context) { controllers.Login(c, db) })

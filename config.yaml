@@ -8,3 +8,8 @@ database:
 
 JWT:
   Secret_key: "secret_key"
+
+redis:
+  port: "6379"
+  host: "redis"
+  ttl: 1
